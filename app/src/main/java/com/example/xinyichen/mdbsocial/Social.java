@@ -13,6 +13,7 @@ public class Social implements Serializable {
     String date;
     String description;
     int numInterested;
+    String key;
 
 
     public Social(String title, String firebaseImageUrl, String date, String description) {
@@ -47,6 +48,10 @@ public class Social implements Serializable {
 
     public void setHostEmail(String hostEmail) {
         this.hostEmail = hostEmail;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public void setFirebaseImageUrl(String firebaseImageUrl) {

@@ -46,10 +46,6 @@ public class CreateSocial extends AppCompatActivity {
         details = (EditText) findViewById(R.id.detailText);
         submitButton = (Button) findViewById(R.id.insertPic);
 
-        /*FirebaseUser user = firebaseAuth.getCurrentUser();
-
-        TextView nameGreeting = (TextView) findViewById(R.id.pageText);
-        nameGreeting.setText("Create your event, " + user.getDisplayName());*/
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +80,7 @@ public class CreateSocial extends AppCompatActivity {
                     Social event = new Social(title.getText().toString(), fileRef.toString(),
                             date.getText().toString(), details.getText().toString());
                     event.setHostEmail(firebaseAuth.getCurrentUser().getEmail());
+                    event.setKey(key);
                     dbReference.child("event").child(key).setValue(event);
                     Intent intent = new Intent(CreateSocial.this, ListActivity2.class);
                     startActivity(intent);

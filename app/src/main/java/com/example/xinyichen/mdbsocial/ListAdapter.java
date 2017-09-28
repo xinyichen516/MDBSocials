@@ -16,8 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -47,30 +50,17 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
         holder.numInterested.setText(m.numInterested);
         holder.email.setText(m.hostEmail);
 
-        //haven't taught this yet but essentially it runs separately from the UI
-        class DownloadFilesTask extends AsyncTask<String, Void, Bitmap> {
-            protected Bitmap doInBackground(String... strings) {
-                try {return Glide.
-                        with(context).
-                        load(strings[0]).
-                        asBitmap().
-                        into(100, 100). // Width and height
-                        get();}
-                catch (Exception e) {return null;}
-            }
+        // Reference to an image file in Firebase Storage
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("event").child(m.key);
 
-            protected void onProgressUpdate(Void... progress) {}
+        // ImageView in your Activity
+        ImageView imageView = holder.eventImg;
 
-            protected void onPostExecute(Bitmap result) {
-                holder.eventImg.setImageBitmap(result);
-            }
-        }
-
-        //Part 4: Load the image from the url. Use
-        // new DownloadFilesTask().execute(uri.toString())
-        // to get set the imageView using the resulting Uri. If it fails, log the exception
-
-        //dw if it doesn't work, bc it didn't work for me :(
+        // Load the image using Glide
+        Glide.with(imageView.getContext())
+                .using(new FirebaseImageLoader())
+                .load(storageReference)
+                .into(imageView);
     }
 
 
@@ -103,6 +93,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
                     intent.putExtra("date", date.getText().toString().trim());
                     intent.putExtra("numInterested", numInterested.getText().toString().trim());
                     intent.putExtra("email", email.getText().toString().trim());
+                    v.getContext().startActivity(intent);
                 }
             });
         }

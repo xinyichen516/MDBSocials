@@ -22,7 +22,6 @@ public class ListActivity2 extends AppCompatActivity {
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/event");
     ArrayList<Social> socials;
     RecyclerView recyclerAdapter;
-    // the database reference, gives you the fir-demo node, getReference - goes to messages directory
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,41 +29,15 @@ public class ListActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_list2);
         recyclerAdapter = (RecyclerView)findViewById(R.id.recyclerview);
         recyclerAdapter.setLayoutManager(new LinearLayoutManager(this));
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                //clearing the previous artist list
-                socials.clear();
-
-                //iterating through all the nodes
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //getting artist
-                    Social artist = postSnapshot.getValue(Social.class);
-                    //adding artist to the list
-                    socials.add(artist);
-                }
-
-                //creating adapter
-                ListAdapter artistAdapter = new ListAdapter(ListActivity2.this, socials);
-                //attaching adapter to the listview
-                recyclerAdapter.setAdapter(artistAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        //socials = getList();
-        //ListAdapter adapter = new ListAdapter(getApplicationContext(), socials);
-        //recyclerAdapter.setAdapter(adapter);
+        socials = getList();
+        final ListAdapter adapter = new ListAdapter(getApplicationContext(), socials);
+        recyclerAdapter.setAdapter(adapter);
 
 
         //Question 2: initialize the messages based on what is in the database
         //adapter.notifyDataSetChanged();
         // Read from the database
-        /*ref.addValueEventListener(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
@@ -83,7 +56,7 @@ public class ListActivity2 extends AppCompatActivity {
                 // Failed to read value
                 Log.w("Cancelled", "Failed to read value.", error.toException());
             }
-        });  */
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +74,7 @@ public class ListActivity2 extends AppCompatActivity {
         //Next part in NewMessageActivity
     }
 
-    @Override
+    /* @Override
     protected void onStart() {
         super.onStart();
         //attaching value event listener
@@ -131,7 +104,7 @@ public class ListActivity2 extends AppCompatActivity {
 
             }
         });
-    }
+    } */
 
     private ArrayList<Social> getList() {
         final ArrayList<Social> events = new ArrayList<>();
