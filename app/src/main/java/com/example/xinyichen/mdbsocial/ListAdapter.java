@@ -7,35 +7,26 @@ package com.example.xinyichen.mdbsocial;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHolder> {
 
     private Context context;
-    private ArrayList<Message> data;
+    private ArrayList<Social> data;
 
-    public ListAdapter(Context context, ArrayList<Message> data) {
+    public ListAdapter(Context context, ArrayList<Social> data) {
         this.context = context;
         this.data = data;
     }
@@ -50,8 +41,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
 
     @Override
     public void onBindViewHolder(final CustomViewHolder holder, int position) {
-        Message m = data.get(position);
-        holder.msgView.setText(m.message);
+        Social m = data.get(position);
+        holder.title.setText(m.title);
+        holder.date.setText(m.date);
+        holder.numInterested.setText(m.numInterested);
+        holder.email.setText(m.hostEmail);
 
         //haven't taught this yet but essentially it runs separately from the UI
         class DownloadFilesTask extends AsyncTask<String, Void, Bitmap> {
@@ -68,7 +62,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
             protected void onProgressUpdate(Void... progress) {}
 
             protected void onPostExecute(Bitmap result) {
-                holder.imageView.setImageBitmap(result);
+                holder.eventImg.setImageBitmap(result);
             }
         }
 
@@ -89,13 +83,28 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
      * A card displayed in the RecyclerView
      */
     class CustomViewHolder extends RecyclerView.ViewHolder {
-        TextView msgView;
-        ImageView imageView;
+        TextView title;
+        ImageView eventImg;
+        TextView date;
+        TextView numInterested;
+        TextView email;
 
         public CustomViewHolder (View view) {
             super(view);
-            this.msgView = (TextView) view.findViewById(R.id.msgView);
-            this.imageView = (ImageView) view.findViewById(R.id.imageView);
+            this.title = (TextView) view.findViewById(R.id.title);
+            this.eventImg = (ImageView) view.findViewById(R.id.eventImg);
+            this.date = (TextView) view.findViewById(R.id.date);
+            this.numInterested = (TextView) view.findViewById(R.id.numInterest);
+            this.email = (TextView) view.findViewById(R.id.email);
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), SocialDetails.class);
+                    intent.putExtra("eventTitle", title.getText().toString().trim());
+                    intent.putExtra("date", date.getText().toString().trim());
+                    intent.putExtra("numInterested", numInterested.getText().toString().trim());
+                    intent.putExtra("email", email.getText().toString().trim());
+                }
+            });
         }
     }
 }

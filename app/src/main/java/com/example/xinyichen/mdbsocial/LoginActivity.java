@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,16 +26,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        //Part 1: Authentication
-        //Question 1: add Firebase Authentication to your project
-
-        //Question 2: create an instance variable for the FirebaseAuth and initialize it below
-
-        //here
-
+        //instance variable for the FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
 
-        //Question 3: create an instance variable to listen for the auth state. Log when the auth state changes
+        //instance variable to listen for the auth state. Log when the auth state changes
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -69,8 +64,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-        String email = ((EditText) findViewById(R.id.emailView)).getText().toString();
-        String password = ((EditText) findViewById(R.id.emailView)).getText().toString();
+        String email = ((EditText) findViewById(R.id.emailView)).getText().toString().trim();
+        String password = ((EditText) findViewById(R.id.passwordView)).getText().toString().trim();
+
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(this,"Please enter your email",Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(TextUtils.isEmpty(password)){
+            Toast.makeText(this,"Please enter your password",Toast.LENGTH_LONG).show();
+            return;
+        }
+
         if (!email.equals("") && !password.equals("")) {
             //Question 4: add sign in capability. If it is successful, go to the listactivity, else display a Toast
             mAuth.signInWithEmailAndPassword(email, password)
@@ -84,8 +90,8 @@ public class LoginActivity extends AppCompatActivity {
                             // signed in user can be handled in the listener.
                             if (!task.isSuccessful()) {
                                 Log.w("SignInWithEmailFailed", "signInWithEmail:failed", task.getException());
-                                Toast.makeText(LoginActivity.this, "Auth Failed",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Sign in failed. Have you already signed up?",
+                                        Toast.LENGTH_LONG).show();
                             } else {
                                 startActivity(new Intent(LoginActivity.this, ListActivity2.class));
                             }
@@ -96,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void attemptSignup() {
         String email = ((EditText) findViewById(R.id.emailView)).getText().toString();
-        String password = ((EditText) findViewById(R.id.emailView)).getText().toString();
+        String password = ((EditText) findViewById(R.id.passwordView)).getText().toString();
 
         if (!email.equals("") && !password.equals("")) {
             //Question 5: add sign up capability. Same results as log in
@@ -110,8 +116,8 @@ public class LoginActivity extends AppCompatActivity {
                             // the auth state listener will be notified and logic to handle the
                             // signed in user can be handled in the listener.
                             if (!task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "Auth Failed",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, "Sign up failed, have you already signed up?",
+                                        Toast.LENGTH_LONG).show();
                             }
 
                             else {
