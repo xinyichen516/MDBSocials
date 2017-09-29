@@ -34,18 +34,10 @@ public class ListActivity2 extends AppCompatActivity {
         recyclerAdapter.setAdapter(adapter);
 
 
-        //Question 2: initialize the messages based on what is in the database
-        //adapter.notifyDataSetChanged();
-        // Read from the database
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
                 for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
-                    //String message = dataSnapshot.child("message").getValue(String.class);
-                    //String firebaseImageURL = dataSnapshot2.child("firebaseImageURL").getValue(String.class);
-                    //messages.add(new Message(message, firebaseImageURL));
                     socials.add(dataSnapshot2.getValue(Social.class));
                 }
                 adapter.notifyDataSetChanged();
@@ -53,7 +45,6 @@ public class ListActivity2 extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
                 Log.w("Cancelled", "Failed to read value.", error.toException());
             }
         });
@@ -67,44 +58,10 @@ public class ListActivity2 extends AppCompatActivity {
             }
         });
 
-        //Question 3: add an event listener for the children of the ref, and make it such that
+        // add an event listener for the children of the ref, and make it such that
         // every time a message is added, it creates a new message, adds it to messages and updates
         // the UI
-
-        //Next part in NewMessageActivity
     }
-
-    /* @Override
-    protected void onStart() {
-        super.onStart();
-        //attaching value event listener
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                //clearing the previous artist list
-                socials.clear();
-
-                //iterating through all the nodes
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //getting artist
-                    Social artist = postSnapshot.getValue(Social.class);
-                    //adding artist to the list
-                    socials.add(artist);
-                }
-
-                //creating adapter
-                ListAdapter artistAdapter = new ListAdapter(ListActivity2.this, socials);
-                //attaching adapter to the listview
-                recyclerAdapter.setAdapter(artistAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    } */
 
     private ArrayList<Social> getList() {
         final ArrayList<Social> events = new ArrayList<>();
@@ -118,6 +75,7 @@ public class ListActivity2 extends AppCompatActivity {
                         dataSnapshot.child("date").getValue(String.class),
                         dataSnapshot.child("description").getValue(String.class));
                 currSocial.setHostEmail(dataSnapshot.child("hostEmail").getValue(String.class));
+                currSocial.setKey(dataSnapshot.child("key").getValue(String.class));
                 events.add(currSocial);
             }
 
