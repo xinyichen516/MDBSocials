@@ -15,7 +15,6 @@ public class Social implements Serializable {
     int numInterested;
     String key;
 
-
     public Social(String title, String firebaseImageUrl, String date, String description) {
         this.title = title;
         this.firebaseImageUrl = firebaseImageUrl;

@@ -5,4 +5,15 @@
     <string name="work_hard_play_harder">Work Hard, Play Harder</string>
     <string name="number_of_people_interested">Number of People Interested</string>
     <string name="back">back</string>
+    <string name="interested">Interested!</string>
+    <string name="date">date</string>
+    <string name="email">Email</string>
+    <string name="title">title</string>
+    <string name="eventimage">eventImage</string>
+    <string name="hello_there_please_sign_in">Hello there! Please sign in!</string>
+    <string name="log_in">Log In</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="emailHint">Email</string>
+    <string name="mdblogo">mdbLogo</string>
 </resources>

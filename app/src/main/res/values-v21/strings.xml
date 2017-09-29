@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="date">date</string>
+    <string name="email">email</string>
+    <string name="title">title</string>
+    <string name="eventimage">eventImage</string>
+    <string name="hello_there_please_sign_in">Hello there! Please sign in!</string>
+    <string name="log_in">Log In</string>
+    <string name="password">Password</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="mdblogo">mdbLogo</string>
+</resources>

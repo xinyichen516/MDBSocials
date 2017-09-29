@@ -89,7 +89,6 @@ public class ListActivity2 extends AppCompatActivity {
     /* @Override
     protected void onStart() {
         super.onStart();
-
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -98,7 +97,6 @@ public class ListActivity2 extends AppCompatActivity {
                 }
                 adapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(DatabaseError error) {
                 Log.w("Cancelled", "Failed to read value.", error.toException());

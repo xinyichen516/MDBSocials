@@ -3,6 +3,7 @@ package com.example.xinyichen.mdbsocial;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,6 +18,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -38,7 +41,7 @@ public class SocialDetails extends AppCompatActivity {
 
         currSocial = (Social) intent.getSerializableExtra("social");
         StorageReference sRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://mdbsocial-39ef5.appspot.com").child("/" + currSocial.key + ".png");
-        final DatabaseReference dRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://mdbsocial-39ef5.firebaseio.com").child("/event");
+        final DatabaseReference dRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://mdbsocial-39ef5.firebaseio.com").child("event");
 
         ImageView eventImg = (ImageView) findViewById(R.id.eventImg);
         Glide.with(getApplicationContext())
@@ -54,21 +57,6 @@ public class SocialDetails extends AppCompatActivity {
         TextView email = (TextView) findViewById(R.id.emailText);
         email.setText(currSocial.hostEmail);
 
-        /* ImageButton back = (ImageButton) findViewById(R.id.imageButton2);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-
-        if (auth.getCurrentUser().getEmail() == currSocial.hostEmail) {
-            email.setText("You");
-        } else {
-
-        } */
 
         final TextView numInterest = (TextView) findViewById(R.id.numInterested);
         numInterest.setText(currSocial.numInterested + " people are interested");
@@ -79,28 +67,30 @@ public class SocialDetails extends AppCompatActivity {
                 clickedButton = !clickedButton;
                 Map<String, Object> childUpdates = new HashMap<>();
 
-                if(clickedButton) {
+                 if(clickedButton) {
                     interestedButton.setText("Yay! Have Fun :)");
                     currSocial.numInterested += 1;
                     numInterest.setText(currSocial.numInterested + " people are interested");
                     childUpdates.put(currSocial.key + "/numInterested", currSocial.numInterested);
                     dRef.updateChildren(childUpdates);
-                } else if (!clickedButton) {
+
+                } else {
                     interestedButton.setText("Interested?");
                     currSocial.numInterested -= 1;
                     numInterest.setText(currSocial.numInterested + " people are interested");
                     childUpdates.put(currSocial.key + "/numInterested", currSocial.numInterested);
                     dRef.updateChildren(childUpdates);
-
                 }
             }
         });
 
     }
 
-    /* @Override
+    @Override
     public void onBackPressed() {
         finish();
+        Intent intent = new Intent(SocialDetails.this, ListActivity2.class);
+        startActivity(intent);
         super.onBackPressed();
-    } */
+    }
 }

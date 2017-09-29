@@ -1,6 +1,7 @@
 package com.example.xinyichen.mdbsocial;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,6 +30,16 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         //instance variable for FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
+        ImageView logo = (ImageView) findViewById(R.id.logo);
+        logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("http://www.mobiledevsberkeley.org/");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
 
         //instance variable to listen for the auth state. Log when the auth state changes
         mAuthListener = new FirebaseAuth.AuthStateListener() {
