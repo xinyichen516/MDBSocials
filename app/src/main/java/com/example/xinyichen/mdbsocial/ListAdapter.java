@@ -4,6 +4,7 @@ package com.example.xinyichen.mdbsocial;
  * Created by xinyichen on 9/27/17.
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -47,7 +48,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
         final Social m = data.get(position);
         holder.title.setText(m.title);
         holder.date.setText(m.date);
-        holder.numInterest.setText(m.numInterested + " people interested.");
+        holder.numInterest.setText(m.numInterested + " people interested");
         holder.email.setText(m.hostEmail);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();

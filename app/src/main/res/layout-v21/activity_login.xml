@@ -77,25 +77,29 @@ tools:context="com.example.xinyichen.mdbsocial.LoginActivity">
 
     <Button
         android:id="@+id/loginButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="120dp"
+        android:layout_height="56dp"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="32dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="30dp"
         android:text="Log In"
+        android:textStyle="bold"
         app:layout_constraintRight_toRightOf="@+id/passwordView"
         app:layout_constraintTop_toBottomOf="@+id/passwordView" />
 
     <Button
         android:id="@+id/signupButton"
-        android:layout_width="92dp"
-        android:layout_height="48dp"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="120dp"
+        android:layout_height="56dp"
         android:layout_marginEnd="16dp"
         android:layout_marginLeft="32dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="30dp"
         android:text="Sign Up"
+        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/passwordView"
         app:layout_constraintTop_toBottomOf="@+id/passwordView" />
 

@@ -9,12 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class ListActivity2 extends AppCompatActivity {
     RecyclerView recyclerAdapter;
     DatabaseReference ref;
     ListAdapter adapter;
+    Query query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +44,9 @@ public class ListActivity2 extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
         ref = FirebaseDatabase.getInstance().getReference("/event");
+        query = FirebaseDatabase.getInstance().getReference().child("event").orderByChild("date");
 
-        ref.addValueEventListener(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
@@ -58,7 +62,7 @@ public class ListActivity2 extends AppCompatActivity {
         });
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        ImageButton fab = (ImageButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

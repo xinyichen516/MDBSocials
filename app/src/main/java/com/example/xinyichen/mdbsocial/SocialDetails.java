@@ -5,11 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,7 +54,15 @@ public class SocialDetails extends AppCompatActivity {
         TextView email = (TextView) findViewById(R.id.emailText);
         email.setText(currSocial.hostEmail);
 
-        /* FirebaseAuth auth = FirebaseAuth.getInstance();
+        /* ImageButton back = (ImageButton) findViewById(R.id.imageButton2);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
 
         if (auth.getCurrentUser().getEmail() == currSocial.hostEmail) {
             email.setText("You");
@@ -60,7 +70,7 @@ public class SocialDetails extends AppCompatActivity {
 
         } */
 
-        TextView numInterest = (TextView) findViewById(R.id.numInterested);
+        final TextView numInterest = (TextView) findViewById(R.id.numInterested);
         numInterest.setText(currSocial.numInterested + " people are interested");
 
         interestedButton.setOnClickListener(new View.OnClickListener() {
@@ -71,15 +81,26 @@ public class SocialDetails extends AppCompatActivity {
 
                 if(clickedButton) {
                     interestedButton.setText("Yay! Have Fun :)");
-                    childUpdates.put(currSocial.key + "/numInterested", currSocial.numInterested + 1);
+                    currSocial.numInterested += 1;
+                    numInterest.setText(currSocial.numInterested + " people are interested");
+                    childUpdates.put(currSocial.key + "/numInterested", currSocial.numInterested);
                     dRef.updateChildren(childUpdates);
                 } else if (!clickedButton) {
                     interestedButton.setText("Interested?");
-                    childUpdates.put(currSocial.key + "/numInterested", currSocial.numInterested - 1);
+                    currSocial.numInterested -= 1;
+                    numInterest.setText(currSocial.numInterested + " people are interested");
+                    childUpdates.put(currSocial.key + "/numInterested", currSocial.numInterested);
                     dRef.updateChildren(childUpdates);
 
                 }
             }
         });
+
     }
+
+    /* @Override
+    public void onBackPressed() {
+        finish();
+        super.onBackPressed();
+    } */
 }
