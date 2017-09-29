@@ -1,6 +1,7 @@
 package com.example.xinyichen.mdbsocial;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,9 +20,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class ListActivity2 extends AppCompatActivity {
-    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/event");
     ArrayList<Social> socials;
     RecyclerView recyclerAdapter;
+    DatabaseReference ref;
+    ListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +31,16 @@ public class ListActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_list2);
         recyclerAdapter = (RecyclerView)findViewById(R.id.recyclerview);
         recyclerAdapter.setLayoutManager(new LinearLayoutManager(this));
-        socials = getList();
-        final ListAdapter adapter = new ListAdapter(getApplicationContext(), socials);
+        recyclerAdapter.addItemDecoration(new VerticalSpaceItemDecoration(3));
+        socials = new ArrayList<>();
+
+
+        adapter = new ListAdapter(getApplicationContext(), socials);
         recyclerAdapter.setAdapter(adapter);
 
+        adapter.notifyDataSetChanged();
+
+        ref = FirebaseDatabase.getInstance().getReference("/event");
 
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -49,6 +57,7 @@ public class ListActivity2 extends AppCompatActivity {
             }
         });
 
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,48 +66,39 @@ public class ListActivity2 extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        // add an event listener for the children of the ref, and make it such that
-        // every time a message is added, it creates a new message, adds it to messages and updates
-        // the UI
     }
 
-    private ArrayList<Social> getList() {
-        final ArrayList<Social> events = new ArrayList<>();
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("/messages");
-        ref.addChildEventListener(new ChildEventListener() {
+    public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
+
+        private final int verticalSpaceHeight;
+
+        public VerticalSpaceItemDecoration(int verticalSpaceHeight) {
+            this.verticalSpaceHeight = verticalSpaceHeight;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
+                                   RecyclerView.State state) {
+            outRect.bottom = verticalSpaceHeight;
+        }
+    }
+    /* @Override
+    protected void onStart() {
+        super.onStart();
+
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(dataSnapshot.getKey(), dataSnapshot.getValue().toString());
-                Social currSocial = new Social(dataSnapshot.child("title").getValue(String.class),
-                        dataSnapshot.child("firebaseImageUrl").getValue(String.class),
-                        dataSnapshot.child("date").getValue(String.class),
-                        dataSnapshot.child("description").getValue(String.class));
-                currSocial.setHostEmail(dataSnapshot.child("hostEmail").getValue(String.class));
-                currSocial.setKey(dataSnapshot.child("key").getValue(String.class));
-                events.add(currSocial);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot2 : dataSnapshot.getChildren()) {
+                    socials.add(dataSnapshot2.getValue(Social.class));
+                }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(DatabaseError error) {
+                Log.w("Cancelled", "Failed to read value.", error.toException());
             }
         });
-        return events;
-    }
+    } */
 }

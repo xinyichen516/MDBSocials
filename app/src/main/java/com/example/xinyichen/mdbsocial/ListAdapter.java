@@ -26,8 +26,8 @@ import java.util.ArrayList;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHolder> {
 
-    private Context context;
-    private ArrayList<Social> data;
+    Context context;
+    ArrayList<Social> data;
 
     public ListAdapter(Context context, ArrayList<Social> data) {
         this.context = context;
@@ -44,30 +44,33 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
 
     @Override
     public void onBindViewHolder(final CustomViewHolder holder, int position) {
-        Social m = data.get(position);
+        final Social m = data.get(position);
         holder.title.setText(m.title);
         holder.date.setText(m.date);
-        holder.numInterested.setText(m.numInterested);
+        holder.numInterest.setText(m.numInterested + " people interested.");
         holder.email.setText(m.hostEmail);
 
-        // Reference to an image file in Firebase Storage
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("event").child(m.key);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://mdbsocial-39ef5.appspot.com");
+        StorageReference pathReference = storageRef.child("/" + m.key + ".png");
 
-        // ImageView in your Activity
-        ImageView imageView = holder.eventImg;
-
-        // Load the image using Glide
-        Glide.with(imageView.getContext())
+        Glide.with(context)
                 .using(new FirebaseImageLoader())
-                .load(storageReference)
-                .into(imageView);
+                .load(pathReference)
+                .into(holder.eventImg);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), SocialDetails.class);
+                intent.putExtra("social", m);
+                v.getContext().startActivity(intent);
+            }
+        });
     }
 
 
     @Override
-    public int getItemCount() {
-        return data.size();
-    }
+    public int getItemCount() { return data.size(); }
 
     /**
      * A card displayed in the RecyclerView
@@ -76,7 +79,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
         TextView title;
         ImageView eventImg;
         TextView date;
-        TextView numInterested;
+        TextView numInterest;
         TextView email;
 
         public CustomViewHolder (View view) {
@@ -84,18 +87,8 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
             this.title = (TextView) view.findViewById(R.id.title);
             this.eventImg = (ImageView) view.findViewById(R.id.eventImg);
             this.date = (TextView) view.findViewById(R.id.date);
-            this.numInterested = (TextView) view.findViewById(R.id.numInterest);
+            this.numInterest = (TextView) view.findViewById(R.id.numInterest);
             this.email = (TextView) view.findViewById(R.id.email);
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), SocialDetails.class);
-                    intent.putExtra("eventTitle", title.getText().toString().trim());
-                    intent.putExtra("date", date.getText().toString().trim());
-                    intent.putExtra("numInterested", numInterested.getText().toString().trim());
-                    intent.putExtra("email", email.getText().toString().trim());
-                    v.getContext().startActivity(intent);
-                }
-            });
         }
     }
 }
