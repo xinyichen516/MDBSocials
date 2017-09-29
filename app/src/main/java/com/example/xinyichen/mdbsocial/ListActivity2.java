@@ -103,4 +103,12 @@ public class ListActivity2 extends AppCompatActivity {
             }
         });
     } */
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        Intent intent = new Intent(ListActivity2.this, LoginActivity.class);
+        startActivity(intent);
+        super.onBackPressed();
+    }
 }
