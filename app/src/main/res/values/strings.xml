@@ -16,4 +16,10 @@
     <string name="sign_up">Sign Up</string>
     <string name="emailHint">Email</string>
     <string name="mdblogo">mdbLogo</string>
+    <string name="pplInt">%1$s people are interested</string>
+    <string name="yay">Yay! Have Fun :)</string>
+    <string name="inter">Interested?</string>
+    <string name="logout">Do You Want To Log Out?</string>
+    <string name="yes">Yes!</string>
+    <string name="no">No!</string>
 </resources>

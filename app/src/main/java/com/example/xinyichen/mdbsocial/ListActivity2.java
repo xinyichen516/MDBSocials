@@ -1,8 +1,12 @@
 package com.example.xinyichen.mdbsocial;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +14,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,7 +50,7 @@ public class ListActivity2 extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
         ref = FirebaseDatabase.getInstance().getReference("/event");
-        query = FirebaseDatabase.getInstance().getReference().child("event").orderByChild("date");
+        query = FirebaseDatabase.getInstance().getReference().child("event").orderByChild("timestamp");
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -70,6 +76,7 @@ public class ListActivity2 extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 
     public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
@@ -106,9 +113,30 @@ public class ListActivity2 extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
-        Intent intent = new Intent(ListActivity2.this, LoginActivity.class);
-        startActivity(intent);
-        super.onBackPressed();
+        AlertDialog.Builder builder2 = new AlertDialog.Builder(ListActivity2.this);
+        builder2.setMessage(R.string.logout);
+        builder2.setPositiveButton(R.string.yes,new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                Intent intent = new Intent(ListActivity2.this, LoginActivity.class);
+                startActivity(intent);
+            }
+
+        });
+
+        builder2.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+
+        });
+
+        builder2.show();
     }
+
 }

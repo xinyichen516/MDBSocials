@@ -48,7 +48,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.CustomViewHold
         final Social m = data.get(position);
         holder.title.setText(m.title);
         holder.date.setText(m.date);
-        holder.numInterest.setText(m.numInterested + " people interested");
+        holder.numInterest.setText(context.getResources().getString(R.string.pplInt, m.numInterested + ""));
         holder.email.setText(m.hostEmail);
 
         FirebaseStorage storage = FirebaseStorage.getInstance();

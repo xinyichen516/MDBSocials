@@ -1,6 +1,7 @@
 package com.example.xinyichen.mdbsocial;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by xinyichen on 9/27/17.
@@ -14,6 +15,7 @@ public class Social implements Serializable {
     String description;
     int numInterested;
     String key;
+    long timestamp;
 
     public Social(String title, String firebaseImageUrl, String date, String description) {
         this.title = title;
@@ -21,6 +23,7 @@ public class Social implements Serializable {
         this.date = date;
         this.numInterested = 0;
         this.description = description;
+        this.timestamp = -1 * new Date().getTime();
     }
 
     public Social() {}

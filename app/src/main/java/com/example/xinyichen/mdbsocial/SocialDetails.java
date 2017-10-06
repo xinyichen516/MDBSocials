@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -69,24 +70,24 @@ public class SocialDetails extends AppCompatActivity {
                 clickedButton = !clickedButton;
                  if(clickedButton) {
                     interestedButton.setText("Yay! Have Fun :)");
-                    onIntClicked(dRef);
-                    numInterest.setText(currSocial.numInterested + " people are interested");
+                    onIntClicked(dRef.child(currSocial.key));
 
                 } else {
                     interestedButton.setText("Interested?");
-                     onIntClicked(dRef);
-                    numInterest.setText(currSocial.numInterested + " people are interested");
+                     onIntClicked(dRef.child(currSocial.key));
                 }
             }
         });
-    }
+        dRef.child(currSocial.key).child("numInterested").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                numInterest.setText(snapshot.getValue() + " people are interested");
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        Intent intent = new Intent(SocialDetails.this, ListActivity2.class);
-        startActivity(intent);
-        super.onBackPressed();
     }
 
     private void onIntClicked(DatabaseReference postRef) {
@@ -100,10 +101,10 @@ public class SocialDetails extends AppCompatActivity {
 
                 if (clickedButton) {
                     // Unstar the post and remove self from stars
-                    p.numInterested = p.numInterested - 1;
+                    p.numInterested = p.numInterested + 1;
                 } else {
                     // Star the post and add self to stars
-                    p.numInterested = p.numInterested + 1;
+                    p.numInterested = p.numInterested - 1;
                 }
                 // Set value and report transaction success
                 mutableData.setValue(p);
