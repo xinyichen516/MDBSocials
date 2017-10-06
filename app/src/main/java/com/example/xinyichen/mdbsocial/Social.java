@@ -17,7 +17,7 @@ public class Social implements Serializable {
     String key;
     long timestamp;
 
-    public Social(String title, String firebaseImageUrl, String date, String description) {
+    Social(String title, String firebaseImageUrl, String date, String description) {
         this.title = title;
         this.firebaseImageUrl = firebaseImageUrl;
         this.date = date;

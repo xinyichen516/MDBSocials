@@ -7,7 +7,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,25 +16,18 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 public class CreateSocial extends AppCompatActivity {
-    StorageReference storageReference;
     private FirebaseAuth firebaseAuth;
     private EditText title, date, details;
-    private Button submitButton, uploadButton;
     ImageButton imgButton;
     int PICK_IMAGE_REQUEST = 111;
     Uri filePath;
-    DatabaseReference dbReference;
     String key;
 
     @Override
@@ -44,18 +36,15 @@ public class CreateSocial extends AppCompatActivity {
         setContentView(R.layout.activity_create_social);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReferenceFromUrl("gs://mdbsocial-39ef5.appspot.com/");
-        dbReference = FirebaseDatabase.getInstance().getReferenceFromUrl("https://mdbsocial-39ef5.firebaseio.com/");
 
-        submitButton = (Button)findViewById(R.id.submitButton);
         imgButton = (ImageButton)findViewById(R.id.imageButton);
-        uploadButton = (Button) findViewById(R.id.uploadButton);
+        Button uploadButton = (Button) findViewById(R.id.uploadButton);
         title = (EditText) findViewById(R.id.titleText);
         date = (EditText) findViewById(R.id.dateText);
         details = (EditText) findViewById(R.id.detailText);
-        submitButton = (Button) findViewById(R.id.submitButton);
+        Button submitButton = (Button) findViewById(R.id.submitButton);
 
-        key = dbReference.child("event").push().getKey();
+        key = Utils.genDRef.push().getKey();
 
 
         imgButton.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +61,7 @@ public class CreateSocial extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(filePath != null) {
-                    StorageReference childRef = storageReference.child(key + ".png");
+                    StorageReference childRef = Utils.storageReference.child(key + ".png");
 
                     //uploading the image
                     UploadTask uploadTask = childRef.putFile(filePath);
@@ -98,12 +87,13 @@ public class CreateSocial extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StorageReference fileRef = storageReference.child(key + ".png");
+                StorageReference fileRef = Utils.storageReference.child(key + ".png");
                 Social event = new Social(title.getText().toString(), fileRef.toString(),
                         date.getText().toString(), details.getText().toString());
                 event.setHostEmail(firebaseAuth.getCurrentUser().getEmail());
                 event.setKey(key);
-                dbReference.child("event").child(key).setValue(event);
+                Utils.genDRef.child(key).setValue(event);
+                finish();
                 Intent intent = new Intent(CreateSocial.this, ListActivity2.class);
                 startActivity(intent);
             }

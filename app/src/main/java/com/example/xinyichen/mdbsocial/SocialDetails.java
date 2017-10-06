@@ -6,51 +6,47 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.HashMap;
-import java.util.Map;
 
-import static com.example.xinyichen.mdbsocial.R.id.interestedButton;
 
-public class SocialDetails extends AppCompatActivity {
+public class SocialDetails extends AppCompatActivity implements View.OnClickListener{
     boolean clickedButton;
     Social currSocial;
+    Button interestedButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_social_details);
 
-        final Button interestedButton = (Button) findViewById(R.id.interestedButton);
+        findViewById(R.id.interestedButton).setOnClickListener(this);
         clickedButton = false;
 
         Intent intent = getIntent();
 
         currSocial = (Social) intent.getSerializableExtra("social");
         StorageReference sRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://mdbsocial-39ef5.appspot.com").child("/" + currSocial.key + ".png");
-        final DatabaseReference dRef = FirebaseDatabase.getInstance().getReferenceFromUrl("https://mdbsocial-39ef5.firebaseio.com").child("event");
 
-        ImageView eventImg = (ImageView) findViewById(R.id.eventImg);
+        Utils.mAuth.addAuthStateListener(Utils.mAuthListener);
+
         Glide.with(getApplicationContext())
                 .using(new FirebaseImageLoader())
                 .load(sRef)
-                .into(eventImg);
+                .into((ImageView) findViewById(R.id.eventImg));
+
+
         TextView title = (TextView) findViewById(R.id.titleText);
         title.setText(currSocial.title);
         TextView date = (TextView) findViewById(R.id.dateText);
@@ -62,26 +58,13 @@ public class SocialDetails extends AppCompatActivity {
 
 
         final TextView numInterest = (TextView) findViewById(R.id.numInterested);
-        numInterest.setText(currSocial.numInterested + " people are interested");
+        numInterest.setText(this.getResources().getString(R.string.pplInt, currSocial.numInterested + ""));
 
-        interestedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clickedButton = !clickedButton;
-                 if(clickedButton) {
-                    interestedButton.setText("Yay! Have Fun :)");
-                    onIntClicked(dRef.child(currSocial.key));
 
-                } else {
-                    interestedButton.setText("Interested?");
-                     onIntClicked(dRef.child(currSocial.key));
-                }
-            }
-        });
-        dRef.child(currSocial.key).child("numInterested").addValueEventListener(new ValueEventListener() {
+        Utils.genDRef.child(currSocial.key).child("numInterested").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                numInterest.setText(snapshot.getValue() + " people are interested");
+                numInterest.setText(numInterest.getResources().getString(R.string.pplInt, snapshot.getValue() + ""));
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -90,6 +73,27 @@ public class SocialDetails extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.interestedButton:
+                clickedButton = !clickedButton;
+                if(clickedButton) {
+                    interestedButton.setText(view.getResources().getString(R.string.yay));
+                    onIntClicked(Utils.genDRef.child(currSocial.key));
+
+                } else {
+                    interestedButton.setText(view.getResources().getString(R.string.inter));
+                    onIntClicked(Utils.genDRef.child(currSocial.key));
+                }
+                break;
+        }
+    }
+
+    /*
+    updates the number of interested people and changes the button text
+     */
     private void onIntClicked(DatabaseReference postRef) {
         postRef.runTransaction(new Transaction.Handler() {
             @Override
