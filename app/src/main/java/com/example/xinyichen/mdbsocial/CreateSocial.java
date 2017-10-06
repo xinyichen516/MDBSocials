@@ -7,6 +7,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,8 +17,12 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -93,8 +98,6 @@ public class CreateSocial extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                //startActivityForResult(intent, 10);
                 StorageReference fileRef = storageReference.child(key + ".png");
                 Social event = new Social(title.getText().toString(), fileRef.toString(),
                         date.getText().toString(), details.getText().toString());
@@ -110,8 +113,8 @@ public class CreateSocial extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //switch(requestCode){
-            //case 111:
+        switch(requestCode){
+            case 111:
                 if (resultCode == RESULT_OK && data != null && data.getData() != null) {
                     filePath = data.getData();
 
@@ -122,17 +125,8 @@ public class CreateSocial extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                //break;
-            /* case 10:
-                StorageReference fileRef = storageReference.child(key + ".png");
-                Social event = new Social(title.getText().toString(), fileRef.toString(),
-                        date.getText().toString(), details.getText().toString());
-                event.setHostEmail(firebaseAuth.getCurrentUser().getEmail());
-                event.setKey(key);
-                dbReference.child("event").child(key).setValue(event);
-                Intent intent = new Intent(CreateSocial.this, ListActivity2.class);
-                startActivity(intent);
-                break; */
 
         }
     }
+
+}

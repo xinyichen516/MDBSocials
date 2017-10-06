@@ -26,6 +26,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.xinyichen.mdbsocial.R.id.interestedButton;
+
 public class SocialDetails extends AppCompatActivity {
     boolean clickedButton;
     Social currSocial;
@@ -65,25 +67,18 @@ public class SocialDetails extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 clickedButton = !clickedButton;
-                Map<String, Object> childUpdates = new HashMap<>();
-
                  if(clickedButton) {
                     interestedButton.setText("Yay! Have Fun :)");
-                    currSocial.numInterested += 1;
+                    onIntClicked(dRef);
                     numInterest.setText(currSocial.numInterested + " people are interested");
-                    childUpdates.put(currSocial.key + "/numInterested", currSocial.numInterested);
-                    dRef.updateChildren(childUpdates);
 
                 } else {
                     interestedButton.setText("Interested?");
-                    currSocial.numInterested -= 1;
+                     onIntClicked(dRef);
                     numInterest.setText(currSocial.numInterested + " people are interested");
-                    childUpdates.put(currSocial.key + "/numInterested", currSocial.numInterested);
-                    dRef.updateChildren(childUpdates);
                 }
             }
         });
-
     }
 
     @Override
@@ -92,5 +87,35 @@ public class SocialDetails extends AppCompatActivity {
         Intent intent = new Intent(SocialDetails.this, ListActivity2.class);
         startActivity(intent);
         super.onBackPressed();
+    }
+
+    private void onIntClicked(DatabaseReference postRef) {
+        postRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                Social p = mutableData.getValue(Social.class);
+                if (p == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                if (clickedButton) {
+                    // Unstar the post and remove self from stars
+                    p.numInterested = p.numInterested - 1;
+                } else {
+                    // Star the post and add self to stars
+                    p.numInterested = p.numInterested + 1;
+                }
+                // Set value and report transaction success
+                mutableData.setValue(p);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Log.d("postTransaction", "postTransaction:onComplete:" + databaseError);
+            }
+        });
     }
 }
